@@ -19,15 +19,22 @@
             <span style="font-size:120%">Team</span>
           </v-btn>
           <v-spacer></v-spacer>
+          <ActivityLog :dialogData="teamInfo" v-if="(!showLoader && !userNotFound) && (role=='Super Admin' || role=='Admin')"/>
           <EditTeam
             :teamData="teamInfo"
-            v-if="!showLoader && !userNotFound"
+            v-if="(!showLoader && !userNotFound) && (role=='Super Admin' || role=='Admin')"
             @editedSuccess="showSnakeBar"
+            @message="showMessageSnakeBar"
           />
           <DeleteTeam
             :TeamInfo="teamInfo"
-            @RemoveSuceess="showSnakeBar"
-            v-if="!showLoader && !userNotFound"
+            @RemoveSuceess="showSnakeBar"            
+            v-if="(!showLoader && !userNotFound) && (role=='Super Admin')"
+          />
+          <ShareTeam
+            v-if="(!showLoader && !userNotFound)"
+            :url="'/team/'+teamInfo.id"
+            :name="teamInfo.name"
           />
         </v-toolbar>
       </v-col>
@@ -35,7 +42,7 @@
 
     <v-row justify="center" align="center" class v-if="showLoader">
       <v-col cols="12" md="12" class="text-center">
-        <v-progress-circular :width="5" :size="50" color="indigo" indeterminate></v-progress-circular>
+        <v-progress-circular :width="5" :size="50" color="primary" indeterminate></v-progress-circular>
       </v-col>
     </v-row>
 
@@ -48,7 +55,7 @@
                 <v-card-title
                   class="grey lighten-4 google-font"
                   primary-title
-                  :style="{'background-image':'url(https://iambharat.tk/images/backImage.jpg)'}"
+                  :style="{'background-image':'url('+require('@/assets/img/dontremove/spakerhead.jpg')+')'}"
                   style="background-position:right top;padding-top:30%;"
                 ></v-card-title>
                 <v-card-text class="px-5 pb-5" style="margin-top: -70px;">
@@ -140,6 +147,8 @@
                   >{{i}}</v-chip>
                 </span>
               </p>
+              
+              <EventByUserTable v-if="events.length>0" :events.sync="events" :isLoading.sync="isLoading"/>
             </v-col>
           </v-row>
         </v-container>
@@ -165,7 +174,7 @@
               >The requested URL /{{this.$route.params.id}} was not found on this server. That’s all we know.</p>
               <br />
               <v-btn
-                color="indigo"
+                color="primary"
                 dark
                 depressed
                 @click="goToTeam"
@@ -186,12 +195,19 @@
 <script>
 import firebase from "@/config/firebase";
 import TeamServices from "@/services/TeamServices";
+import {mapState} from "vuex"
 export default {
-  name: "ViewTeam",
+  name: "DetailTeamView",
   components: {
     Snakebar: () => import("@/components/Common/Snakebar"),
     DeleteTeam: () => import("@/components/Team/DeleteTeam"),
-    EditTeam: () => import("@/components/Team/EditTeam")
+    EditTeam: () => import("@/components/Team/EditTeam"),
+    EventByUserTable: ()=> import('@/components/Common/EventsByUserTable'),
+    ShareTeam: ()=> import('@/components/Common/ShareUrl'),
+    ActivityLog: ()=>import('@/components/Common/UserActivity'),
+  },
+  computed:{
+    ...mapState(['role'])
   },
   data: () => ({
     snakeBarMessage: "",
@@ -200,12 +216,19 @@ export default {
     snakeBarTimeOut: 5000,
     showLoader: true,
     userNotFound: true,
-    teamInfo: {}
+    isLoading: false,
+    teamInfo: {},
+    events:[],
   }),
   mounted() {
     this.getTeamData();
+    this.getEventsDataHostedByMember()
   },
   methods: {
+    showMessageSnakeBar(text){
+      this.snakeBarMessage = text;
+      this.isSnakeBarVisible = true;
+    },
     showSnakeBar(text) {
       this.snakeBarMessage = text;
       this.isSnakeBarVisible = true;
@@ -213,6 +236,18 @@ export default {
     },
     goToTeam() {
       this.$router.replace("/team");
+    },
+    getEventsDataHostedByMember(){
+      this.isLoading = true
+      TeamServices.getEventsByTeamMember(this.$route.params.id).then(res=>{
+        if(res.success){
+          this.events = res.data
+          this.isLoading = false
+        }
+      }).catch(e=>{
+        console.log(e)
+        this.isLoading = false
+      })
     },
     getTeamData() {
       this.showLoader = true;

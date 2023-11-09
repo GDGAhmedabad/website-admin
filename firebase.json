@@ -7,9 +7,13 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [ {
-        "source": "**",
-        "destination": "/index.html"
-    } ]
+    "rewrites": [{
+      "source": "**",
+      "destination": "/index.html"
+    }]
+  },
+  "firestore": {
+    "rules": "firebase-rules/firestore.rules",
+    "indexes": "firebase-rules/firestore.indexes.json"
   }
 }

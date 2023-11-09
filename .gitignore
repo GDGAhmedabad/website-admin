@@ -1,5 +1,4 @@
 .DS_Store
-‘~
 node_modules
 /dist
 
@@ -20,3 +19,11 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+package-lock.json
+
+firebase-config.js
+*/firebase-config.js
+
+*.cache
+.firebase

@@ -1,6 +1,28 @@
 import firebase from '@/config/firebase'
+import UserService from './UsersServices'
 
 let teamServices = {
+
+    getEventsByTeamMember:(id)=>{
+        let events=[]
+        return new Promise((resolve, reject)=>{
+            firebase.firestore.collection('events').where('team',"array-contains",id).get().then(docs=>{
+                docs.forEach(doc=>{
+                  events.push(doc.data())
+                })
+                resolve({
+                    success: true,
+                    data:events
+                })
+              }).catch(e=>{
+                reject({
+                    success: false,
+                    msg: e
+                })
+            })
+        })
+    },
+
     // Get All the Team Members Details
     getAllTeam:()=>{
         let team = []
@@ -19,10 +41,9 @@ let teamServices = {
                 })
             })
             .catch(err => {
-                reject(err)
-                // console.log("Error getting documents", err);
+                reject(err);
             });
-        })
+        });
     },
 
     // Get Team Member Details whose id = id
@@ -64,10 +85,10 @@ let teamServices = {
             .collection("team")
             .doc(id)
             .set(data)
-            .then(res => {
+            .then(() => {
                 resolve({
                     success:true,
-                    msg:'Team Member Addedd Successfully'
+                    msg:'Team Member Addedd Successfully & User Created' 
                 })
             })
             .catch(e => {
@@ -80,17 +101,33 @@ let teamServices = {
     },
 
     // Remove Team Member whose id is id
-    removeTeamMember:(id)=>{
+    removeTeamMember:(teamInfo)=>{
         return new Promise((resolve,reject)=>{
             firebase.firestore
             .collection("team")
-            .doc(id)
+            .doc(teamInfo.id)
             .delete()
             .then(() => {
-                resolve({
-                    success:true,
-                    msg:'Team Member Removed Successfully'
-                })
+                if(teamInfo.uid && teamInfo.uid.length>0){
+                    UserService.removeUser(teamInfo.uid).then(res=>{
+                        resolve({
+                            success:true,
+                            msg:'Team Member Removed Successfully',
+                            data:res
+                        })
+                    }).catch(e=>{
+                        reject({
+                            success:false,
+                            msg:'Error in Removing Team Member: '+e
+                        })
+                    })
+                }else{
+                    resolve({
+                        success:true,
+                        msg:'Team Member Removed Successfully',
+                        data:""
+                    })
+                }
             })
             .catch(e => {
                 reject({
@@ -121,6 +158,45 @@ let teamServices = {
                 })
             });
         })
+    },
+    addFirstTime:(info)=>{
+        return new Promise((resolve, reject)=>{
+            let uid = firebase.auth.currentUser.uid;
+            info.uid = uid;
+            teamServices.addTeamMember(info.id, info).then((res)=>{
+                if(res.success==true){
+                    let data={
+                        disabled:false,
+                        id:info.id,
+                        uid:uid,
+                        userType:"Super Admin",
+                    }
+                    firebase.firestore.collection('users').doc(uid).set(data)
+                    .then(() =>{
+                        resolve({
+                            success:true,
+                        })
+                    }).catch(e=>{
+                        
+                        reject({
+                            success:false,
+                            msg:e
+                        })
+                    })
+                  }else{
+                    reject({
+                        success:false,
+                        msg:"Something went wrong"
+                    })
+                  }
+            }).catch(e=>{
+                reject({
+                    success:false,
+                    msg:e
+                })
+            })
+        })
+
     }
 }
 

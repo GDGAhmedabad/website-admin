@@ -1,27 +1,37 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import firebase from '@/config/firebase';
-import store from '@/store/index';
 
 Vue.use(VueRouter);
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     name: 'Home',
     component: () => import( /* webpackChunkName: "home" */ '@/views/Home'),
     meta: {
       requiresAuth: true,
       title: "Home",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
     path: '/home',
     name: 'HomePage',
-    component: () => import( /* webpackChunkName: "home1" */ '@/views/Home'),
+    component: () => import( /* webpackChunkName: "home" */ '@/views/Home'),
     meta: {
       requiresAuth: true,
-      title: "Home"
+      title: "Home",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -30,7 +40,7 @@ const routes = [
     component: () => import( /* webpackChunkName: "login" */ '@/views/Login'),
     meta: {
       requiresAuth: false,
-      title: "Login"
+      title: "Login",
     }
   },
   {
@@ -39,7 +49,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "team" */ '@/views/Team'),
     meta: {
       requiresAuth: true,
-      title: "Team"
+      title: "Team",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -48,7 +64,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "partners" */ '@/views/Partners'),
     meta: {
       requiresAuth: true,
-      title: "Partners"
+      title: "Partners",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -57,7 +79,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "partners-details" */ '@/views/Partners/ViewPartner'),
     meta: {
       requiresAuth: true,
-      title: "Partner Details"
+      title: "Partner Details",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -66,7 +94,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "team-details" */ '@/views/Team/ViewTeam'),
     meta: {
       requiresAuth: true,
-      title: "Team Details"
+      title: "Team Details",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -75,7 +109,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "speakers" */ '@/views/Speakers'),
     meta: {
       requiresAuth: true,
-      title: "Speakers"
+      title: "Speakers",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -84,7 +124,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "speakers-details" */ '@/views/Speakers/ViewSpeaker'),
     meta: {
       requiresAuth: true,
-      title: "Speakers Details"
+      title: "Speakers Details",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -93,7 +139,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "config" */ '@/views/Config'),
     meta: {
       requiresAuth: true,
-      title: "Config"
+      title: "Config",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": false,
+        "Viewer": false
+      }
     }
   },
   {
@@ -102,7 +154,13 @@ const routes = [
     component: () => import( /* webpackChunkName: "events" */ '@/views/Events'),
     meta: {
       requiresAuth: true,
-      title: "Events"
+      title: "Events",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -111,16 +169,43 @@ const routes = [
     component: () => import( /* webpackChunkName: "event-details" */ '@/views/Events/ViewEvent'),
     meta: {
       requiresAuth: true,
-      title: "Event Details"
+      title: "Event Details",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
-    path: '/notification',
-    name: "Notification",
-    component: () => import( /* webpackChunkName: "notifications" */ '@/views/Notifications'),
+    path: '/roles',
+    name: "UserManagement",
+    component: () => import( /* webpackChunkName: "roles" */ '@/views/Users'),
     meta: {
       requiresAuth: true,
-      title: "Notifications"
+      title: "User Management",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": false,
+        "Viewer": false
+      }
+    }
+  },
+  {
+    path: '/profile',
+    name: "profile",
+    component: () => import( /* webpackChunkName: "profile" */ '@/views/Profile/Profile'),
+    meta: {
+      requiresAuth: true,
+      title: "Profile Settings",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
@@ -128,19 +213,57 @@ const routes = [
     name: 'About',
     component: () => import( /* webpackChunkName: "about" */ '@/views/About.vue'),
     meta: {
-      requiresAuth: true,
-      title: "About"
+      requiresAuth: false,
+      title: "About",
+      bottomVisible: true,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
     }
   },
   {
-      path: '*',
-      name: 'redirect',
-      redirect: { path: '/' },
-      meta:{
-        title:`Redirect `,
-        color:"#0277bd",
+    path: '/onboard/:id',
+    name: "OnBoard",
+    component: () => import( /* webpackChunkName: "onboard" */ '@/views/TeamOnboard'),
+    meta: {
+      requiresAuth: false,
+      title: "Team Onboard",
+      bottomVisible: false,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
       }
+    }
+  },
+  {
+    path: '/install',
+    name: "InstallApp",
+    component: () => import( /* webpackChunkName: "installApp" */ '@/views/InstallApp'),
+    meta: {
+      requiresAuth: false,
+      title: "Install App",
+      bottomVisible: false,
+      access: {
+        "Super Admin": true,
+        "Admin": true,
+        "Viewer": true
+      }
+    }
+  },
+  {
+    path: '*',
+    name: 'redirect',
+    redirect: {
+      path: '/'
     },
+    meta: {
+      title: `Redirect `,
+      color: "#0277bd",
+    }
+  },
 ];
 
 const router = new VueRouter({
@@ -153,6 +276,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = to.meta.title + " - Aura Admin";
   }
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (firebase.auth.currentUser) {
       next();

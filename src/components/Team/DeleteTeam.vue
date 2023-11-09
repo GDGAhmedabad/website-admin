@@ -3,7 +3,7 @@
     <template v-slot:activator="{}">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn fab x-small icon v-on="on" dark color="indigo" class="mx-1" outlined @click.stop="dialog = true">
+          <v-btn fab x-small icon v-on="on" dark color="primary" class="mx-1" outlined @click.stop="dialog = true">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
@@ -19,7 +19,7 @@
 
         <v-btn color="green darken-1" text @click="dialog = false">Disagree</v-btn>
 
-        <v-btn color="red darken-1" text :loading="loading" @click="deleteItem(TeamInfo.id)">Agree</v-btn>
+        <v-btn color="red darken-1" text :loading="loading" @click="deleteItem()">Agree</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -28,6 +28,7 @@
 <script>
 import TeamServices from '@/services/TeamServices'
 export default {
+  name:"DeleteTeamMember",
   props: {
     TeamInfo: {}
   },
@@ -36,9 +37,9 @@ export default {
     loading: false
   }),
   methods: {
-    deleteItem(id) {
+    deleteItem() {
       this.loading = true;
-      TeamServices.removeTeamMember(this.TeamInfo.id).then(res=>{
+      TeamServices.removeTeamMember(this.TeamInfo).then(res=>{
         if(res.success==true){
           this.loading = false;
           this.dialog = false;
