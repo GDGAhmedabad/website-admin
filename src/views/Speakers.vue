@@ -1,5 +1,5 @@
 <template>
-  <v-container class style="max-width:1600px">
+  <v-container class style="max-width: 1600px">
     <Snakebar
       :message="snakeBarMessage"
       :isShow.sync="isSnakeBarVisible"
@@ -9,8 +9,13 @@
 
     <v-row class="my-0 py-0">
       <v-col>
-        <v-toolbar class="elevation-0" style="border:1px solid #e0e0e0;border-radius:5px;">
-          <v-toolbar-title class="google-font mr-3">Speakers: {{ speakersData.length }}</v-toolbar-title>
+        <v-toolbar
+          class="elevation-0"
+          style="border: 1px solid #e0e0e0; border-radius: 5px"
+        >
+          <v-toolbar-title class="google-font mr-3"
+            >Speakers: {{ speakersData.length }}</v-toolbar-title
+          >
           <v-spacer></v-spacer>
           <!-- Desktop -->
           <v-text-field
@@ -45,7 +50,7 @@
           <v-btn
             fab
             x-small
-            color="indigo"
+            color="primary"
             @click="openCloseSearch"
             class="mr-2 hidden-md-and-up"
             outlined
@@ -61,7 +66,7 @@
             v-if="speakersData.length"
             borderless
             background-color="white"
-            color="indigo"
+            color="primary"
             dense
             v-model="dataView"
             class="hidden-sm-and-down"
@@ -85,7 +90,13 @@
             </v-tooltip>
           </v-btn-toggle>
           <!-- Toggle Menu for View -->
-          <AddSpeaker class="ml-2" @showSuccess="showSnakeBar" />
+
+          <AddSpeaker
+            v-if="role == 'Super Admin' || role == 'Admin'"
+            class="ml-2"
+            @showSuccess="showSnakeBar"
+            @message="showMessageSnakeBar"
+          />
         </v-toolbar>
       </v-col>
     </v-row>
@@ -94,9 +105,16 @@
       <v-col cols="12">
         <v-container fluid class="pa-0">
           <v-row v-if="isLoading">
-            <v-col col="12" md="2" sm="3" cols="6" v-for="n in 6" :key="n" >
-              <v-sheet :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`" class>
-                <v-skeleton-loader class="mx-auto" max-width="300" type="card"></v-skeleton-loader>
+            <v-col col="12" md="2" sm="3" cols="6" v-for="n in 6" :key="n">
+              <v-sheet
+                :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
+                class
+              >
+                <v-skeleton-loader
+                  class="mx-auto"
+                  max-width="300"
+                  type="card"
+                ></v-skeleton-loader>
               </v-sheet>
             </v-col>
           </v-row>
@@ -120,34 +138,54 @@
                       md="2"
                       lg="2"
                       sm="3"
-                      v-for="(item) in props.items"
+                      v-for="item in props.items"
                       :key="item.id"
                       class="pa-1"
                     >
                       <v-card
-                        style="cursor: pointer;user-select: none;border:1px solid #e0e0e0;border-radius:5px;"
+                        style="
+                          cursor: pointer;
+                          user-select: none;
+                          border: 1px solid #e0e0e0;
+                          border-radius: 5px;
+                        "
                         height="100%"
                         v-ripple
                         @click="gotoSpeakerDetails(item.id)"
                         class="text-center elevation-0"
                       >
-                        <v-card-text style="height:100%">
-                            <v-avatar size="100">
-                              <img
-                                :src="(item.image.length>0)?item.image:require('@/assets/img/default_avatar.jpg')"
-                                alt
-                              />
-                            </v-avatar>
+                        <v-card-text style="height: 100%">
+                          <v-avatar size="100">
+                            <img
+                              :src="
+                                item.image && item.image.length > 0
+                                  ? item.image
+                                  : require('@/assets/img/default_avatar.jpg')
+                              "
+                              alt
+                            />
+                          </v-avatar>
                           <p
                             class="mt-3 mb-0 google-font black--text"
-                            style="font-size:120%"
-                          >{{item.name}}</p>
+                            style="font-size: 120%"
+                          >
+                            {{ item.name }}
+                          </p>
                           <p
                             class="mt-0 mb-0 google-font caption"
-                            style="font-size:60%"
-                          >{{item.designation}}</p>
-                          <v-chip x-small v-if="item.visible == true" color="success">Visible</v-chip>
-                          <v-chip v-else x-small dark color="red">Not Visible</v-chip>
+                            style="font-size: 60%"
+                          >
+                            {{ item.designation }}
+                          </p>
+                          <v-chip
+                            x-small
+                            v-if="item.visible == true"
+                            color="success"
+                            >Visible</v-chip
+                          >
+                          <v-chip v-else x-small dark color="red"
+                            >Not Visible</v-chip
+                          >
                         </v-card-text>
                       </v-card>
                     </v-col>
@@ -161,7 +199,11 @@
                   <v-col class="pa-1">
                     <v-data-table
                       :mobile-breakpoint="0"
-                      style="border:1px solid #e0e0e0;border-radius:5px;background:white;"
+                      style="
+                        border: 1px solid #e0e0e0;
+                        border-radius: 5px;
+                        background: white;
+                      "
                       :search="search"
                       :loading="isLoading"
                       :headers="headers"
@@ -169,18 +211,53 @@
                       :items-per-page="5"
                       class="elevation-0 ma-0 pa-0"
                     >
-                      <template v-slot:item.visible="{ item }">
-                        <v-chip x-small v-if="item.visible == true" color="success">Visible</v-chip>
-                        <v-chip v-else x-small dark color="red">Not Visible</v-chip>
+                      <template v-slot:[`item.name`]="{ item }">
+                        <v-list-item>
+                          <v-list-item-avatar>
+                            <v-img
+                              :src="
+                                item.image.length > 0
+                                  ? item.image
+                                  : require('@/assets/img/default_avatar.jpg')
+                              "
+                            ></v-img>
+                          </v-list-item-avatar>
+
+                          <v-list-item-content>
+                            <v-list-item-title
+                              class="google-font"
+                              v-html="item.name"
+                            ></v-list-item-title>
+                            <v-list-item-subtitle
+                              class="google-font"
+                              v-html="item.email"
+                            ></v-list-item-subtitle>
+                          </v-list-item-content>
+                        </v-list-item>
                       </template>
-                      <template v-slot:item.actions="{ item }">
+                      <template v-slot:[`item.visible`]="{ item }">
+                        <v-chip
+                          x-small
+                          v-if="item.visible == true"
+                          color="success"
+                          >Visible</v-chip
+                        >
+                        <v-chip v-else x-small dark color="red"
+                          >Not Visible</v-chip
+                        >
+                      </template>
+                      <template v-slot:[`item.actions`]="{ item }">
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on }">
-                            <v-btn icon v-on="on" @click="gotoSpeakerDetails(item.id)">
+                            <v-btn
+                              icon
+                              v-on="on"
+                              @click="gotoSpeakerDetails(item.id)"
+                            >
                               <v-icon>mdi-eye</v-icon>
                             </v-btn>
                           </template>
-                          <span>{{item.name}} Details</span>
+                          <span>{{ item.name }} Details</span>
                         </v-tooltip>
                       </template>
                     </v-data-table>
@@ -197,18 +274,27 @@
                   <v-container
                     fluid
                     class
-                    style="border:1px solid #e0e0e0;border-radius:5px;background:white"
+                    style="
+                      border: 1px solid #e0e0e0;
+                      border-radius: 5px;
+                      background: white;
+                    "
                   >
                     <v-row justify="center" align="center" class="pa-3">
                       <v-col md="4" class="text-center">
                         <img
-                          style="width:50%;text-align:center"
+                          style="width: 50%; text-align: center"
                           :src="require('@/assets/img/svg/DataNotFound.svg')"
                         />
                         <h1 class="google-font">Speakers Data Not Found</h1>
                         <p class="google-font">Kindly add Speaker</p>
                         <br />
-                        <AddSpeaker @showSuccess="showSnakeBar" />
+                        <AddSpeaker
+                          v-if="role == 'Super Admin' || role == 'Admin'"
+                          class="ml-2"
+                          @showSuccess="showSnakeBar"
+                          @message="showMessageSnakeBar"
+                        />
                       </v-col>
                     </v-row>
                   </v-container>
@@ -224,14 +310,16 @@
 </template>
 
 <script>
-import SpeakerServices from '@/services/SpeakersServices'
+import SpeakerServices from "@/services/SpeakersServices";
+import { mapState } from "vuex";
 export default {
-  name: "TeamView",
+  name: "SpeakerView",
   inject: ["theme"],
   components: {
-    Snakebar:()=>import('@/components/Common/Snakebar'),
-    AddSpeaker:()=>import('@/components/Speakers/AddSpeaker')
+    Snakebar: () => import("@/components/Common/Snakebar"),
+    AddSpeaker: () => import("@/components/Speakers/AddSpeaker"),
   },
+  computed: { ...mapState(["role"]) },
   data: () => ({
     dataView: 0,
     isSearch: false,
@@ -247,15 +335,15 @@ export default {
       {
         text: "Name",
         align: "start",
-        value: "name"
+        value: "name",
+        width: "25%",
       },
       { text: "Designation", value: "designation" },
       { text: "Company", value: "company.name" },
       { text: "Visible", value: "visible" },
-      { text: "Actions", value: "actions", sortable: false }
-    ]
+      { text: "Actions", value: "actions", sortable: false },
+    ],
   }),
-  computed: {},
   mounted() {
     if (this.$route.query.msg) {
       this.showSnakeBar("Speaker Removed Sucessfully");
@@ -269,6 +357,10 @@ export default {
       this.isSearch = !this.isSearch;
       this.search = "";
     },
+    showMessageSnakeBar(text) {
+      this.snakeBarMessage = text;
+      this.isSnakeBarVisible = true;
+    },
     showSnakeBar(text) {
       this.snakeBarMessage = text;
       this.isSnakeBarVisible = true;
@@ -280,24 +372,26 @@ export default {
     showData() {
       this.speakersData = [];
       this.isLoading = true;
-      SpeakerServices.getAllSpeakers().then(res=>{
-        if(res.success == true){
-          this.speakersData = res.data
-          this.isLoading = false;
-        }
-      }).catch(e=>{
-        console.log("Error getting documents", e);
-      })
-    }
-  }
+      SpeakerServices.getAllSpeakers()
+        .then((res) => {
+          if (res.success == true) {
+            this.speakersData = res.data;
+            this.isLoading = false;
+          }
+        })
+        .catch((e) => {
+          console.log("Error getting documents", e);
+        });
+    },
+  },
 };
 </script>
 <style>
 .v-badge--dot .v-badge__badge {
-    border-radius: 6px;
-    height: 12px;
-    min-width: 0;
-    padding: 0;
-    width: 12px;
+  border-radius: 6px;
+  height: 12px;
+  min-width: 0;
+  padding: 0;
+  width: 12px;
 }
 </style>

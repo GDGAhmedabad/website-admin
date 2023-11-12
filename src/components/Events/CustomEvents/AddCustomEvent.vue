@@ -7,10 +7,18 @@
       transition="dialog-bottom-transition"
       scrollable
     >
-      <template v-slot:activator="{ }">
+      <template v-slot:activator="{}">
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn fab x-small color="indigo" outlined dark v-on="on" @click.stop="dialog = true">
+            <v-btn
+              fab
+              x-small
+              color="primary"
+              outlined
+              dark
+              v-on="on"
+              @click.stop="dialog = true"
+            >
               <v-icon dark>mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -22,9 +30,18 @@
           <v-btn icon @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title class="google-font">New Custom Event</v-toolbar-title>
+          <v-toolbar-title class="google-font"
+            >New Custom Event</v-toolbar-title
+          >
           <v-spacer></v-spacer>
-          <v-btn color="indigo" :loading="loading" depressed dark @click="SaveEvent">Save Event</v-btn>
+          <v-btn
+            color="primary"
+            :loading="loading"
+            depressed
+            dark
+            @click="SaveEvent"
+            >Save Event</v-btn
+          >
         </v-toolbar>
         <v-card-text class="px-1">
           <v-container fluid class style>
@@ -32,13 +49,17 @@
               <v-row justify="center" align="start">
                 <v-col md="3" lg="2" cols="12" sm="3">
                   <img
-                    style="width:100%;text-align:center"
+                    style="width: 100%; text-align: center"
                     :src="require('@/assets/img/svg/dataentry.svg')"
                   />
                   <h3 class="google-font">New Custom Event</h3>
-                  <p class="google-font mb-0" style="color:red">*indicates required field</p>
+                  <p class="google-font mb-0" style="color: red">
+                    *indicates required field
+                  </p>
                   <p>Event ID should be Unique</p>
-                  <p style="color:red">Once you assigned an ID to event, it can't be changed</p>
+                  <p style="color: red">
+                    Once you assigned an ID to event, it can't be changed
+                  </p>
                 </v-col>
                 <v-col md="8" lg="9" cols="12" sm="8">
                   <v-row>
@@ -102,12 +123,28 @@
                         min-width="290px"
                       >
                         <template v-slot:activator="{ on }">
-                          <v-text-field v-model="eventData.date" label="Date *" outlined v-on="on"></v-text-field>
+                          <v-text-field
+                            v-model="eventData.date"
+                            label="Date *"
+                            outlined
+                            v-on="on"
+                          ></v-text-field>
                         </template>
-                        <v-date-picker v-model="eventData.date" no-title scrollable>
+                        <v-date-picker
+                          v-model="eventData.date"
+                          no-title
+                          scrollable
+                        >
                           <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                          <v-btn text color="primary" @click="$refs.menu.save(eventData.date)">OK</v-btn>
+                          <v-btn text color="primary" @click="menu = false"
+                            >Cancel</v-btn
+                          >
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.menu.save(eventData.date)"
+                            >OK</v-btn
+                          >
                         </v-date-picker>
                       </v-menu>
                     </v-col>
@@ -135,19 +172,17 @@
                           full-width
                         >
                           <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="modal2 = false">Cancel</v-btn>
-                          <v-btn text color="primary" @click="$refs.dialog.save(eventData.time.starttime)">OK</v-btn>
+                          <v-btn text color="primary" @click="modal2 = false"
+                            >Cancel</v-btn
+                          >
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialog.save(eventData.time.starttime)"
+                            >OK</v-btn
+                          >
                         </v-time-picker>
                       </v-dialog>
-                      
-                      <!-- <v-text-field
-                        v-model="eventData.time.starttime"
-                        class="ma-0"
-                        :rules="idRules"
-                        label="Event Start Time*"
-                        type="time"
-                        outlined
-                      ></v-text-field> -->
                     </v-col>
 
                     <v-col md="2" xs="3" cols="12" class="ma-0">
@@ -173,19 +208,17 @@
                           full-width
                         >
                           <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="modal1 = false">Cancel</v-btn>
-                          <v-btn text color="primary" @click="$refs.dialog1.save(eventData.time.endtime)">OK</v-btn>
+                          <v-btn text color="primary" @click="modal1 = false"
+                            >Cancel</v-btn
+                          >
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialog1.save(eventData.time.endtime)"
+                            >OK</v-btn
+                          >
                         </v-time-picker>
                       </v-dialog>
-
-                      <!-- <v-text-field
-                        v-model="eventData.time.endtime"
-                        class="ma-0"
-                        :rules="idRules"
-                        label="Event End Time*"
-                        type="time"
-                        outlined
-                      ></v-text-field> -->
                     </v-col>
                     <v-col md="4" xs="4" cols="12" class="ma-0">
                       <v-text-field
@@ -203,8 +236,7 @@
                         outlined
                       ></v-text-field>
                     </v-col>
-
-                    <v-col md="6" xs="4" cols="12" class="ma-0">
+                    <v-col md="7" xs="7" cols="6" class="ma-0">
                       <v-text-field
                         v-model="eventData.image"
                         class="ma-0"
@@ -212,8 +244,15 @@
                         outlined
                       ></v-text-field>
                     </v-col>
-
-                    <v-col md="6" xs="4" cols="12" class="ma-0">
+                    <v-col md="4" xs="4" cols="6" class="ma-0">
+                      <UploadImage
+                        type="events"
+                        :userId="eventData.id"
+                        @message="showMessageSnakeBar"
+                        @uploadedImage="imageUploadDone"
+                      />
+                    </v-col>
+                    <v-col md="12" xs="12" cols="12" class="ma-0">
                       <v-combobox
                         chips
                         v-model="eventData.hashtags"
@@ -222,7 +261,9 @@
                         multiple
                         outlined
                       >
-                        <template v-slot:selection="{ attrs, item, select, selected }">
+                        <template
+                          v-slot:selection="{ attrs, item, select, selected }"
+                        >
                           <v-chip
                             v-bind="attrs"
                             :input-value="selected"
@@ -248,7 +289,9 @@
 
                   <v-row>
                     <v-col class="ma-0" md="12" cols="12">
-                      <h4 class="google-font mb-0">Speaker, Partners & Team Info</h4>
+                      <h4 class="google-font mb-0">
+                        Speaker, Partners & Team Info
+                      </h4>
                     </v-col>
                     <v-col md="6" xs="6" lg="4" cols="12" class="ma-0">
                       <v-autocomplete
@@ -264,10 +307,9 @@
                           <v-chip small v-if="index === 0">
                             <span>{{ item.name }}</span>
                           </v-chip>
-                          <span
-                            v-if="index === 1"
-                            class="grey--text caption"
-                          >(+{{ speakersData.length - 1 }} others)</span>
+                          <span v-if="index === 1" class="grey--text caption"
+                            >(+{{ speakersData.length - 1 }} others)</span
+                          >
                         </template>
                       </v-autocomplete>
                     </v-col>
@@ -285,10 +327,9 @@
                           <v-chip small v-if="index === 0">
                             <span>{{ item.name }}</span>
                           </v-chip>
-                          <span
-                            v-if="index === 1"
-                            class="grey--text caption"
-                          >(+{{ partnersData.length - 1 }} others)</span>
+                          <span v-if="index === 1" class="grey--text caption"
+                            >(+{{ partnersData.length - 1 }} others)</span
+                          >
                         </template>
                       </v-autocomplete>
                     </v-col>
@@ -308,10 +349,9 @@
                           <v-chip small v-if="index === 0">
                             <span>{{ item.name }}</span>
                           </v-chip>
-                          <span
-                            v-if="index === 1"
-                            class="grey--text caption"
-                          >(+{{ eventData.team.length - 1 }} others)</span>
+                          <span v-if="index === 1" class="grey--text caption"
+                            >(+{{ eventData.team.length - 1 }} others)</span
+                          >
                         </template>
                       </v-autocomplete>
                     </v-col>
@@ -361,6 +401,14 @@
                         outlined
                       ></v-text-field>
                     </v-col>
+                    <v-col md="4" xs="4" lg="4" cols="12" class="ma-0">
+                      <v-text-field
+                        v-model="eventData.links.youtube"
+                        class="ma-0"
+                        label="Youtube Live URL"
+                        outlined
+                      ></v-text-field>
+                    </v-col>
                   </v-row>
 
                   <v-row class>
@@ -370,21 +418,25 @@
                     <v-col class="ma-0" md="12" cols="12">
                       <v-toolbar
                         class="elevation-0"
-                        style="border:1px solid #e0e0e0;border-radius:5px;"
+                        style="border: 1px solid #e0e0e0; border-radius: 5px"
                       >
-                        <v-toolbar-title class="google-font mr-3">Event Agenda</v-toolbar-title>
+                        <v-toolbar-title class="google-font mr-3"
+                          >Event Agenda</v-toolbar-title
+                        >
                         <v-spacer></v-spacer>
                         <AddNewAgenda :data.sync="eventData.agenda" />
                       </v-toolbar>
                     </v-col>
 
-                    <v-col cols="12" v-if="eventData.agenda.length<=0" class>
+                    <v-col cols="12" v-if="eventData.agenda.length <= 0" class>
                       <v-img
                         :src="require('@/assets/img/svg/DataNotFound.svg')"
                         :height="150"
                         contain
                       ></v-img>
-                      <p class="google-font my-0 py-0 mb-2 text-center">No Agenda found</p>
+                      <p class="google-font my-0 py-0 mb-2 text-center">
+                        No Agenda found
+                      </p>
                     </v-col>
 
                     <v-col cols="12" v-else>
@@ -399,8 +451,17 @@
                           >
                             <template v-slot:item.actions="{ item }">
                               <EditAgenda :data.sync="item" />
-                              <v-btn fab x-small color="indigo" class="mx-1" outlined dark>
-                                <v-icon @click="deleteData(idx)">mdi-delete</v-icon>
+                              <v-btn
+                                fab
+                                x-small
+                                color="primary"
+                                class="mx-1"
+                                outlined
+                                dark
+                              >
+                                <v-icon @click="deleteData(idx)"
+                                  >mdi-delete</v-icon
+                                >
                               </v-btn>
                               <!-- <RemoveAgenda :data.sync = "item"/> -->
                             </template>
@@ -422,44 +483,45 @@
 </template>
 
 <script>
-import firebase from "@/config/firebase";
+import { mapState } from "vuex";
+import TeamServices from "@/services/TeamServices";
+import PartnersServices from "@/services/PartnersServices";
+import SpeakerServices from "@/services/SpeakersServices";
+import CustomEventServices from "@/services/CustomEventServices";
 export default {
+  name:"AddCustomEvent",
   components: {
-    AddNewAgenda:()=>import('@/components/Events/CustomEvents/AddNewAgenda'),
-    EditAgenda:()=>import('@/components/Events/CustomEvents/EditAgenda')
+    AddNewAgenda: () => import("@/components/Events/CustomEvents/AddNewAgenda"),
+    EditAgenda: () => import("@/components/Events/CustomEvents/EditAgenda"),
+    UploadImage: () => import("@/components/Common/ImageUpload"),
   },
-  props: [],
+  computed: { ...mapState(["userDetails"]) },
   data() {
     return {
       menu: false,
-      modal2:false,
-      modal1:false,
+      modal2: false,
+      modal1: false,
       headers: [
-        {
-          text: "Start Time",
-          value: "starttime"
-        },
-        {
-          text: "End Time",
-          value: "endtime"
-        },
+        { text: "Start Time", value: "starttime" },
+        { text: "End Time", value: "endtime" },
         { text: "Title", value: "title" },
         { text: "Description", value: "des" },
-        { text: "Actions", sortable: false, value: "actions" }
+        { text: "Actions", sortable: false, value: "actions" },
       ],
       imagePre: "",
       valid: true,
       idRules: [
-        v => !!v || "Field Value is required",
-        v => (v && v.length <= 30) || "Name must be less than 30 characters"
+        (v) => !!v || "Field Value is required",
+        (v) =>
+          (v && v.length <= 100) || "Name must be less than 100 characters",
       ],
       nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 70) || "Name must be less than 50 characters"
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length <= 100) || "Name must be less than 50 characters",
       ],
       emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
       teamRole: ["Organizing Team", "Core Team", "Volunteer"],
       dialog: false,
@@ -475,28 +537,29 @@ export default {
         des: "",
         venue: {
           name: "",
-          googlemapsurl: ""
+          googlemapsurl: "",
         },
         links: {
           meetup: "",
           facebook: "",
           registration: "",
           feedback: "",
-          callforspeaker: ""
+          callforspeaker: "",
+          youtube: "",
         },
         time: {
           starttime: "",
-          endtime: ""
+          endtime: "",
         },
         hashtags: [],
         speakers: [],
         partners: [],
         team: [],
-        agenda: []
+        agenda: [],
       },
       speakersData: [],
       partnersData: [],
-      teamData: []
+      teamData: [],
     };
   },
   mounted() {
@@ -505,47 +568,47 @@ export default {
     this.ShowTeam();
   },
   methods: {
+    showMessageSnakeBar(text) {
+      this.$emit("message", text);
+    },
+    imageUploadDone(text) {
+      this.eventData.image = text;
+    },
     deleteData(index) {
       this.eventData.agenda.splice(index, 1);
     },
     ShowSpeakers() {
-      firebase.firestore
-        .collection("Speakers")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            this.speakersData.push(doc.data());
-          });
+      this.speakersData = [];
+      SpeakerServices.getAllSpeakers()
+        .then((res) => {
+          if (res.success == true) {
+            this.speakersData = res.data;
+          }
         })
-        .catch(err => {
-          console.log("Error getting documents", err);
+        .catch((e) => {
+          console.log("Error getting documents", e);
         });
     },
     ShowPartners() {
-      firebase.firestore
-        .collection("partners")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            this.partnersData.push(doc.data());
-          });
+      this.partnersData = [];
+      PartnersServices.getAllPartners()
+        .then((res) => {
+          if (res.success == true) {
+            this.partnersData = res.data;
+          }
         })
-        .catch(err => {
-          console.log("Error getting documents", err);
+        .catch((e) => {
+          console.log("Error getting documents", e);
         });
     },
     ShowTeam() {
-      firebase.firestore
-        .collection("team")
-        .orderBy("role", "asc")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            this.teamData.push(doc.data());
-          });
+      this.teamData = [];
+      TeamServices.getAllTeam()
+        .then((res) => {
+          this.teamData = res.data;
         })
-        .catch(err => {
-          console.log("Error getting documents", err);
+        .catch((e) => {
+          console.log("Error getting documents", e);
         });
     },
     remove(item) {
@@ -553,24 +616,32 @@ export default {
       this.eventData.hashtags = [...this.eventData.hashtags];
     },
     SaveEvent() {
-      // console.log('Save BTN Called')
-      // if (this.$refs.form.validate()) {
       this.loading = true;
-      firebase.firestore
-        .collection("events")
-        .doc(this.eventData.id)
-        .set(this.eventData)
-        .then(res => {
-          this.loading = false;
-          this.dialog = false;
-          this.$emit("showSuccess", "Event Added Success");
+      this.eventData.createdBy = {
+        name: this.userDetails.name,
+        id: this.userDetails.id,
+      };
+      this.eventData.createdOn = new Date();
+      this.eventData.lastUpdatedOn = "";
+      this.eventData.lastUpdatedBy = {
+        name: "",
+        id: "",
+      };
+      CustomEventServices.addCustomEvent(this.eventData.id, this.eventData)
+        .then((res) => {
+          if (res.success == true) {
+            this.loading = false;
+            this.dialog = false;
+            this.$emit("showSuccess", res.msg);
+          }
         })
-        .catch(e => {
+        .catch((e) => {
           this.loading = false;
-          this.$emit("showSuccess", "Failed to Add Event");
+          console.log(e);
+          this.$emit("message", e.msg);
         });
-    }
-  }
+    },
+  },
   // }
 };
 </script>

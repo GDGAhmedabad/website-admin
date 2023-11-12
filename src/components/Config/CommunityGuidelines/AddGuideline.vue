@@ -2,11 +2,11 @@
   <div class="text-center">
     <v-dialog v-model="dialog" persistent scrollable width="500">
       <template v-slot:activator="{ on }">
-        <v-btn fab x-small color="indigo" outlined dark v-on="on">
+        <v-btn fab x-small color="primary" outlined dark v-on="on">
           <v-icon dark>mdi-plus</v-icon>
         </v-btn>
       </template>
-      <v-card v-if="dialog" class >
+      <v-card v-if="dialog" class>
         <v-card-title class="google-font" primary-title dark>
           Add New Guideline
         </v-card-title>
@@ -22,7 +22,11 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" class="pa-1 ma-0">
-                <v-textarea outlined v-model="des" label="Description"></v-textarea>
+                <v-textarea
+                  outlined
+                  v-model="des"
+                  label="Description"
+                ></v-textarea>
               </v-col>
             </v-row>
           </v-container>
@@ -32,14 +36,15 @@
 
         <v-card-actions class="grey lighten-4">
           <div class="flex-grow-1"></div>
-          <v-btn color="indigo" text @click="dialog = false">Close</v-btn>
+          <v-btn color="primary" text @click="dialog = false">Close</v-btn>
           <v-btn
-            color="indigo"
+            color="primary"
             dark
             depressed
             @click="addGuid"
             :loading="loading"
-          >Add</v-btn>
+            >Add</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -47,27 +52,26 @@
 </template>
 
 <script>
-import firebase from '@/config/firebase';
-
 export default {
-    props:['data'],
-    data:()=>({
-        dialog:false,
-        loading:false,
-        name:"",
-        des:""
-    }),
-    methods:{
-      addGuid(){
-        this.data.push({
-          name:this.name,
-          des:this.des
-        });
-        this.name="";
-        this.des="";
-        this.dialog = false;
-      }
-    }
+  name:"AddGuidelinesConfig",
+  props: ["data"],
+  data: () => ({
+    dialog: false,
+    loading: false,
+    name: "",
+    des: "",
+  }),
+  methods: {
+    addGuid() {
+      this.data.push({
+        name: this.name,
+        des: this.des,
+      });
+      this.name = "";
+      this.des = "";
+      this.dialog = false;
+    },
+  },
 };
 </script>
 

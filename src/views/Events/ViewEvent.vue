@@ -19,15 +19,18 @@
             <span style="font-size:120%">Events</span>
           </v-btn>
           <v-spacer></v-spacer>
-          <EditEvent
+          <ActivityLog :dialogData="eventInfo"
+            v-if="(!showLoader && !userNotFound) && (role=='Super Admin' || role=='Admin')"/>
+          <EditEvent 
             :eventInfo="eventInfo"
-            v-if="!showLoader && !userNotFound"
+            v-if="(!showLoader && !userNotFound) && (role=='Super Admin' || role=='Admin')"
             @editedSuccess="showSnakeBar"
+            @message="showMessageSnakeBar"
           />
           <DeleteEvent
             :EventInfo="eventInfo"
             @RemoveSuceess="showSnakeBar"
-            v-if="!showLoader && !userNotFound"
+            v-if="(!showLoader && !userNotFound) && (role=='Super Admin')"
           />
           <PublicUrl :EventInfo="eventInfo" v-if="!showLoader && !userNotFound" />
         </v-toolbar>
@@ -36,7 +39,7 @@
 
     <v-row justify="center" align="center" class v-if="showLoader">
       <v-col cols="12" md="12" class="text-center">
-        <v-progress-circular :width="5" :size="50" color="indigo" indeterminate></v-progress-circular>
+        <v-progress-circular :width="5" :size="50" color="primary" indeterminate></v-progress-circular>
       </v-col>
     </v-row>
 
@@ -83,7 +86,7 @@
                 >Call For Speakers</v-btn>
 
                 <v-btn
-                  color="indigo"
+                  color="primary"
                   dark
                   target="_blank"
                   v-if="eventInfo.links.facebook"
@@ -125,6 +128,16 @@
                   label
                   small
                 >Registration</v-btn>
+                <v-btn
+                  color="red"
+                  dark
+                  target="_blank"
+                  v-if="eventInfo.links.youtube"
+                  :href="eventInfo.links.youtube"
+                  class="ma-1"
+                  label
+                  small
+                >Youtube Live</v-btn>
               </div>
             </div>
           </v-col>
@@ -320,7 +333,7 @@
               >The requested URL /{{this.$route.params.id}} was not found on this server. That’s all we know.</p>
               <br />
               <v-btn
-                color="indigo"
+                color="primary"
                 dark
                 depressed
                 @click="goToEvents"
@@ -339,16 +352,21 @@
 </template>
 
 <script>
-import firebase from "@/config/firebase";
+import CustomEventServices from '@/services/CustomEventServices'
 import PartnersServices from "@/services/PartnersServices"
+import { mapState } from 'vuex'
+
+import firebase from "@/config/firebase";
 
 export default {
-  name: "ViewTeam",
+  name: "DetailEventView",
   components: {
     Snakebar:()=>import('@/components/Common/Snakebar'),
     DeleteEvent:()=>import('@/components/Events/subcomponents/DeleteEvent'),
     EditEvent:()=>import('@/components/Events/CustomEvents/EditCustomEvent'),
-    PublicUrl:()=>import('@/components/Events/subcomponents/PublicUrl')
+    PublicUrl:()=>import('@/components/Events/subcomponents/PublicUrl'),
+    ActivityLog: ()=>import('@/components/Common/UserActivity')
+
   },
   data: () => ({
     snakeBarMessage: "",
@@ -376,6 +394,9 @@ export default {
       { text: "Description", value: "des" }
     ]
   }),
+  computed:{
+    ...mapState(['role'])
+  },
   mounted() {
     this.getEventData();
     this.getSpeakersData();
@@ -383,6 +404,10 @@ export default {
     this.getTeam();
   },
   methods: {
+    showMessageSnakeBar(text){
+      this.snakeBarMessage = text;
+      this.isSnakeBarVisible = true;
+    },
     showSnakeBar(text) {
       this.snakeBarMessage = text;
       this.isSnakeBarVisible = true;
@@ -402,19 +427,14 @@ export default {
     getEventData() {
       this.showLoader = true;
       this.userNotFound = false;
-      firebase.firestore
-        .collection("events")
-        .doc(this.$route.params.id)
-        .get()
-        .then(doc => {
-          // console.log(doc.data());
-          if (doc.data() == undefined) {
+      CustomEventServices.getCustomEventDetails(this.$route.params.id)
+      .then(res => {
+          if (res.isFound == false) {
             this.showLoader = false;
             this.userNotFound = true;
-          } else if (doc.data()) {
+          } else if (res.isFound == true) {
             this.showLoader = false;
-            this.eventInfo = doc.data();
-            // console.log(this.eventInfo);
+            this.eventInfo = res.data;
           } else {
             this.showLoader = false;
             this.userNotFound = true;
@@ -441,22 +461,22 @@ export default {
     },
     getTeam() {
       firebase.firestore
-        .collection("team")
-        .orderBy("role", "asc")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            doc = doc.data();
-            if (this.eventInfo.team.indexOf(doc.id) !== -1) {
-              if (doc.role == "Core Team") this.coreTeam.push(doc);
-              else if (doc.role == "Organizing Team") this.orgTeam.push(doc);
-              else this.vol.push(doc);
-            }
-          });
-        })
-        .catch(err => {
-          console.log("Error getting documents", err);
+      .collection("team")
+      .orderBy("role", "asc")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          doc = doc.data();
+          if (this.eventInfo.team.indexOf(doc.id) !== -1) {
+            if (doc.role == "Core Team") this.coreTeam.push(doc);
+            else if (doc.role == "Organizing Team") this.orgTeam.push(doc);
+            else this.vol.push(doc);
+          }
         });
+      })
+      .catch(err => {
+        console.log("Error getting documents", err);
+      });
     },
     getPartnersData() {
       PartnersServices.getAllPartners().then(res=>{

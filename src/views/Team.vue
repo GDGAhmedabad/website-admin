@@ -42,7 +42,7 @@
             ></v-text-field>
           </v-slide-x-reverse-transition>
 
-          <v-btn fab x-small color="indigo" @click="openCloseSearch" class="mr-2 hidden-md-and-up" outlined dark>
+          <v-btn fab x-small color="primary" @click="openCloseSearch" class="mr-2 hidden-md-and-up" outlined dark>
             <v-icon dark v-if="!isSearch">mdi-account-search</v-icon>
             <v-icon dark v-else>mdi-close</v-icon>
           </v-btn>
@@ -50,7 +50,7 @@
           &nbsp;
 
           <!-- Toggle Menu for View -->
-          <v-btn-toggle v-if="teamData.length" borderless background-color="white" color="indigo" dense v-model="dataView" class="hidden-sm-and-down">
+          <v-btn-toggle v-if="teamData.length" borderless background-color="white" color="primary" dense v-model="dataView" class="hidden-sm-and-down">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on">
@@ -70,7 +70,7 @@
             </v-tooltip>
           </v-btn-toggle>
           <!-- Toggle Menu for View -->
-          <AddTeam class="ml-2" @showSuccess="showSnakeBar" />
+          <AddTeam v-if="role=='Super Admin'" class="ml-2" @showSuccess="showSnakeBar" @message="showMessageSnakeBar"  />
         </v-toolbar>
       </v-col>
     </v-row>
@@ -166,9 +166,22 @@
                       :loading="isLoading"
                       :headers="headers"
                       :items="teamData"
-                      :items-per-page="5"
+                      sort-desc
+                      :items-per-page="10"
                       class="elevation-0 ma-0 pa-0"
-                    >
+                    > 
+                      <template v-slot:item.name="{ item }">
+                        <v-list-item>
+                          <v-list-item-avatar>
+                            <v-img :src="(item.image.length>0)?item.image:require('@/assets/img/default_avatar.jpg')"></v-img>
+                          </v-list-item-avatar>
+
+                          <v-list-item-content>
+                            <v-list-item-title class="google-font" v-html="item.name"></v-list-item-title>
+                            <v-list-item-subtitle class="google-font" v-html="item.email"></v-list-item-subtitle>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
                       <template v-slot:item.active="{ item }">
                         <v-chip x-small v-if="item.active == true" color="success">Active</v-chip>
                         <v-chip v-else x-small dark color="red">Inctive</v-chip>
@@ -209,7 +222,7 @@
                         <h1 class="google-font">Team Members Data Not Found</h1>
                         <p class="google-font">Kindly add Team member</p>
                         <br>
-                        <AddTeam class="ml-2" @showSuccess="showSnakeBar" />
+                        <AddTeam class="ml-2"  v-if="role=='Super Admin'" @showSuccess="showSnakeBar" @message="showMessageSnakeBar"  />
                       </v-col>
                     </v-row>
                   </v-container>
@@ -227,6 +240,7 @@
 
 <script>
 import TeamServices from '@/services/TeamServices'
+import {mapState} from 'vuex'
 export default {
   name: "TeamView",
   inject: ['theme'],
@@ -234,7 +248,11 @@ export default {
     Snakebar:()=>import('@/components/Common/Snakebar'),
     AddTeam:()=>import('@/components/Team/AddTeam')
   },
+  computed:{
+    ...mapState(['role'])
+  },
   data: () => ({
+    items: ['All', 'Active','Inactive'],
     dataView:0,
     isSearch:false,
     search: "",
@@ -250,6 +268,7 @@ export default {
         text: 'Name',
         align: 'start',
         value: 'name',
+        width:'25%'
       },
       { text: 'Role', value: 'role' },
       { text: 'Designation', value: 'designation' },
@@ -271,6 +290,10 @@ export default {
     openCloseSearch(){
       this.isSearch = !this.isSearch
       this.search = "";
+    },
+    showMessageSnakeBar(text){
+      this.snakeBarMessage = text;
+      this.isSnakeBarVisible = true;
     },
     showSnakeBar(text) {
       this.snakeBarMessage = text;

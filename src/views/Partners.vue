@@ -42,14 +42,14 @@
             ></v-text-field>
           </v-slide-x-reverse-transition>
 
-          <v-btn fab x-small color="indigo" @click="openCloseSearch" class="mr-2 hidden-md-and-up" outlined dark>
+          <v-btn fab x-small color="primary" @click="openCloseSearch" class="mr-2 hidden-md-and-up" outlined dark>
             <v-icon dark v-if="!isSearch">mdi-account-search</v-icon>
             <v-icon dark v-else>mdi-close</v-icon>
           </v-btn>
           <!-- Mobile -->
           &nbsp;
           <!-- Toggle Menu for View -->
-          <v-btn-toggle v-if="partnersData.length" borderless background-color="white" color="indigo" dense v-model="dataView" class="hidden-sm-and-down">
+          <v-btn-toggle v-if="partnersData.length" borderless background-color="white" color="primary" dense v-model="dataView" class="hidden-sm-and-down">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on">
@@ -69,7 +69,7 @@
             </v-tooltip>
           </v-btn-toggle>
           <!-- Toggle Menu for View -->
-          <AddTeam class="ml-2" @showSuccess="showSnakeBar" />
+          <AddPartner v-if="(role=='Super Admin' || role=='Admin')" class="ml-2" @showSuccess="showSnakeBar" @message="showMessageSnakeBar" />
         </v-toolbar>
       </v-col>
     </v-row>
@@ -120,7 +120,7 @@
                       class="py-0" 
                       v-ripple
                       @click="gotoPartnerDetails(item.id)"
-                      style="border:1px solid #e0e0e0;border-radius:5px;background:white;cursor: pointer;user-select: none;">
+                      style="height:100% !important;border:1px solid #e0e0e0;border-radius:5px;background:white;cursor: pointer;user-select: none;">
                         <v-row class="">
                           <v-col class="grey lighten-4 pa-0" >
                             <v-img :aspect-ratio="16/6.5" :src="(item.image.length>0)?item.image:require('@/assets/img/dontremove/noimage.jpg')"></v-img>
@@ -206,7 +206,7 @@
                         <h1 class="google-font">Partners Data Not Found</h1>
                         <p class="google-font">Kindly add Partners</p>
                         <br>
-                        <AddTeam class="ml-2" @showSuccess="showSnakeBar" />
+                        <AddPartner v-if="(role=='Super Admin' || role=='Admin')" class="ml-2" @showSuccess="showSnakeBar"  @message="showMessageSnakeBar"  />
                       </v-col>
                     </v-row>
                   </v-container>
@@ -224,12 +224,13 @@
 
 <script>
 import PartnersServices from "@/services/PartnersServices"
+import {mapState} from 'vuex';
 export default {
-  name: "TeamView",
+  name: "PartnerView",
   inject: ['theme'],
   components: {
     Snakebar:()=>import('@/components/Common/Snakebar'),
-    AddTeam:()=>import('@/components/Partners/AddPartner')
+    AddPartner:()=>import('@/components/Partners/AddPartner')
   },
   data: () => ({
     dataView:0,
@@ -253,7 +254,9 @@ export default {
       { text: 'Actions', value: 'actions', sortable: false, },
     ],
   }),
-  computed: {},
+  computed: {
+    ...mapState(['role'])
+  },
   mounted() {
     if (this.$route.query.msg) {
       this.showSnakeBar("Partner Removed Sucessfully");
@@ -261,6 +264,10 @@ export default {
       this.showData();
   },
   methods: {
+    showMessageSnakeBar(text){
+      this.snakeBarMessage = text;
+      this.isSnakeBarVisible = true;
+    },
     changeSnakebar(vale) {
       this.isSnakeBarVisible = vale;
     },

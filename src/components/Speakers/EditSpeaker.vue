@@ -1,19 +1,34 @@
 <template>
   <v-dialog v-model="dialog" persistent scrollable width="1200">
-    <template v-slot:activator="{  }">
+    <template v-slot:activator="{}">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
-          <v-btn fab x-small icon color="indigo" class="mx-1" outlined v-on="on" @click.stop="dialog = true" dark>
+          <v-btn
+            fab
+            x-small
+            icon
+            color="primary"
+            class="mx-1"
+            outlined
+            v-on="on"
+            @click.stop="dialog = true"
+            dark
+          >
             <v-icon>mdi-lead-pencil</v-icon>
             <!--  -->
           </v-btn>
         </template>
-        <span>Edit {{speakerData.name}} Details</span>
+        <span>Edit {{ speakerData.name }} Details</span>
       </v-tooltip>
     </template>
 
     <v-card v-if="dialog">
-      <v-card-title class="google-font" style="border-bottom:1px solid #e0e0e0;" primary-title>Edit {{speakerData.name}} Details | Speaker</v-card-title>
+      <v-card-title
+        class="google-font"
+        style="border-bottom: 1px solid #e0e0e0"
+        primary-title
+        >Edit {{ speakerData.name }} Details | Speaker</v-card-title
+      >
 
       <v-card-text class>
         <v-container fluid class="pa-0">
@@ -22,12 +37,14 @@
               <v-form ref="form" v-model="valid" lazy-validation>
                 <!-- {{speakerData}} -->
                 <!-- Row 1 -->
-                <v-row class="pa-3  py-0 my-0">
+                <v-row class="pa-3 py-0 my-0">
                   <v-col md="12" cols="12" class="pa-1 ma-0">
-                    <p class="google-font mb-0" style="color:red">*indicates required field</p>
+                    <p class="google-font mb-0" style="color: red">
+                      *indicates required field
+                    </p>
                   </v-col>
                   <v-col md="12" cols="12" class="pa-1 py-0 ma-0 mb-2">
-                    <p style="font-size:120%" class="my-0">Speaker Status</p>
+                    <p style="font-size: 120%" class="my-0">Speaker Status</p>
                   </v-col>
 
                   <v-col md="3" xs="3" cols="12" class="pa-1 py-0 ma-0">
@@ -49,14 +66,13 @@
                       outlined
                     ></v-text-field>
                   </v-col>
-
                 </v-row>
                 <!-- Row 1 -->
 
                 <!-- Row 2 -->
                 <v-row class="pa-3 py-0 my-0">
                   <v-col md="12" cols="12" class="pa-1 ma-0 mb-2">
-                    <p style="font-size:120%" class="my-0">Speaker Info</p>
+                    <p style="font-size: 120%" class="my-0">Speaker Info</p>
                   </v-col>
 
                   <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
@@ -79,7 +95,53 @@
                     ></v-text-field>
                   </v-col>
 
+                  <!-- <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
+                    <v-text-field
+                      v-model="updatedData.image"
+                      class="ma-0"
+                      label="Image URL"
+                      outlined
+                    ></v-text-field>
+                  </v-col> -->
                   <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
+                    <v-text-field
+                      v-model="updatedData.company.name"
+                      class="ma-0"
+                      :rules="nameRules"
+                      label="Company Name *"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
+                    <v-text-field
+                      v-model="updatedData.company.url"
+                      class="ma-0"
+                      label="Company URL"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
+                    <v-text-field
+                      v-model="updatedData.city"
+                      class="ma-0"
+                      :rules="nameRules"
+                      label="City *"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
+                    <v-text-field
+                      v-model="updatedData.country"
+                      class="ma-0"
+                      :rules="nameRules"
+                      label="Country *"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col md="7" xs="7" cols="6" class="pa-1 py-0 ma-0">
                     <v-text-field
                       v-model="updatedData.image"
                       class="ma-0"
@@ -87,46 +149,22 @@
                       outlined
                     ></v-text-field>
                   </v-col>
-                   <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
-                      <v-text-field
-                        v-model="updatedData.company.name"
-                        class="ma-0"
-                        :rules="nameRules"
-                        label="Company Name *"
-                        outlined
-                      ></v-text-field>
-                    </v-col>
-                    <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0 mr-2">
-                      <v-text-field
-                        v-model="updatedData.company.url"
-                        class="ma-0"
-                        label="Company URL"
-                        outlined
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
-                      <v-text-field
-                        v-model="updatedData.city"
-                        class="ma-0"
-                        :rules="nameRules"
-                        label="City *"
-                        outlined
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
-                      <v-text-field
-                        v-model="updatedData.country"
-                        class="ma-0"
-                        :rules="nameRules"
-                        label="Country *"
-                        outlined
-                      ></v-text-field>
-                    </v-col>
+                  <v-col md="4" xs="4" cols="6" class="pa-1 py-0 ma-0">
+                    <UploadImage
+                      type="speaker"
+                      :userId="updatedData.id"
+                      @message="showMessageSnakeBar"
+                      @uploadedImage="imageUploadDone"
+                    />
+                  </v-col>
 
                   <v-col md="12" xs="12" cols="12" class="pa-1 py-0 ma-0">
-                    <v-textarea outlined name="input-7-4" v-model="updatedData.bio" label="Bio"></v-textarea>
+                    <v-textarea
+                      outlined
+                      name="input-7-4"
+                      v-model="updatedData.bio"
+                      label="Bio"
+                    ></v-textarea>
                   </v-col>
                 </v-row>
                 <!-- Row 2 -->
@@ -134,7 +172,7 @@
                 <!-- Row 3 -->
                 <v-row class="pa-3 py-0 my-0">
                   <v-col md="12" cols="12" class="pa-1 ma-0 mb-3">
-                    <p style="font-size:120%" class="my-0">Personal Info</p>
+                    <p style="font-size: 120%" class="my-0">Personal Info</p>
                   </v-col>
 
                   <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
@@ -161,7 +199,7 @@
                 <!-- Row 4 -->
                 <v-row class="pa-3">
                   <v-col md="12" cols="12" class="pa-1 mb-3 ma-0">
-                    <p style="font-size:120%" class="my-0">Social Links</p>
+                    <p style="font-size: 120%" class="my-0">Social Links</p>
                   </v-col>
 
                   <v-col md="4" xs="4" cols="12" class="pa-1 py-0 ma-0">
@@ -229,25 +267,32 @@
 
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="indigo" text @click="dialog = false">Close</v-btn>
+        <v-btn color="primary" text @click="dialog = false">Close</v-btn>
         <v-btn
-          color="indigo"
+          color="primary"
           depressed
           dark
           :disabled="!valid"
           :loading="loading"
           @click="UpdateData"
-        >Update {{speakerData.name.split(" ")[0]}} Details</v-btn>
+          >Update {{ speakerData.name.split(" ")[0] }} Details</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import SpeakerServices from '@/services/SpeakersServices'
+import { mapState } from "vuex";
+import SpeakerServices from "@/services/SpeakersServices";
+
 export default {
+  name:"EditSpeaker",
   props: {
-    speakerData: {}
+    speakerData: {},
+  },
+  components: {
+    UploadImage: () => import("@/components/Common/ImageUpload"),
   },
   data() {
     return {
@@ -257,12 +302,12 @@ export default {
       valid: true,
       dialogImageUload: false,
       nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
+        (v) => !!v || "Name is required",
+        (v) => (v && v.length <= 50) || "Name must be less than 50 characters",
       ],
       emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
       ],
       teamRole: ["Core Team", "Organizing Team", "Volunteer"],
       dialog: false,
@@ -281,7 +326,7 @@ export default {
         country: this.speakerData.country,
         company: {
           name: this.speakerData.company.name,
-          url: this.speakerData.company.url
+          url: this.speakerData.company.url,
         },
         socialLinks: {
           facebook: this.speakerData.socialLinks.facebook,
@@ -289,15 +334,22 @@ export default {
           linkedin: this.speakerData.socialLinks.linkedin,
           medium: this.speakerData.socialLinks.medium,
           twitter: this.speakerData.socialLinks.twitter,
-          web: this.speakerData.socialLinks.web
-        }
-      }
+          web: this.speakerData.socialLinks.web,
+        },
+      },
     };
   },
+  computed: { ...mapState(["userDetails"]) },
   methods: {
+    showMessageSnakeBar(text) {
+      this.$emit("message", text);
+    },
+    imageUploadDone(text) {
+      this.updatedData.image = text;
+    },
     UpdateData() {
       if (this.$refs.form.validate()) {
-        let data ={
+        let data = {
           visible: this.updatedData.visible,
           name: this.updatedData.name,
           designation: this.updatedData.designation,
@@ -309,7 +361,12 @@ export default {
           country: this.updatedData.country,
           company: {
             name: this.updatedData.company.name,
-            url: this.updatedData.company.url
+            url: this.updatedData.company.url,
+          },
+          lastUpdatedOn: new Date(),
+          lastUpdatedBy: {
+            name: this.userDetails.name,
+            id: this.userDetails.id,
           },
           socialLinks: {
             facebook: this.updatedData.socialLinks.facebook,
@@ -317,22 +374,24 @@ export default {
             linkedin: this.updatedData.socialLinks.linkedin,
             medium: this.updatedData.socialLinks.medium,
             twitter: this.updatedData.socialLinks.twitter,
-            web: this.updatedData.socialLinks.web
-          }
-        }
+            web: this.updatedData.socialLinks.web,
+          },
+        };
         this.loading = true;
-        SpeakerServices.editSpeaker(this.speakerData.id,data).then(res=>{
-          if(res.success==true){
+        SpeakerServices.editSpeaker(this.speakerData.id, data)
+          .then((res) => {
+            if (res.success == true) {
+              this.loading = false;
+              this.dialog = false;
+              this.$emit("editedSuccess", res.msg);
+            }
+          })
+          .catch((e) => {
+            console.log(e.msg);
             this.loading = false;
-            this.dialog = false;
-            this.$emit("editedSuccess", res.msg);
-          }
-        }).catch(e=>{
-          console.log(e.msg);
-          this.loading = false;
-        })
+          });
       }
-    }
-  }
+    },
+  },
 };
 </script>

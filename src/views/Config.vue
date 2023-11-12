@@ -1,5 +1,5 @@
-<template> 
-  <v-container style="max-width:1600px" class="mt-2">
+<template>
+  <v-container style="max-width: 1600px" class="mt-2">
     <Snakebar
       :message="snakeBarMessage"
       :isShow.sync="isSnakeBarVisible"
@@ -12,10 +12,12 @@
       <v-tab key="item1">General</v-tab>
       <v-tab key="item2">Community Guidelines</v-tab>
       <v-tab key="item3">Footer Config</v-tab>
-      <v-tab key="item5">Keys & Securities</v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="tab" style="border:1px solid #e0e0e0;border-radius:5px;">
+    <v-tabs-items
+      v-model="tab"
+      style="border: 1px solid #e0e0e0; border-radius: 5px"
+    >
       <v-tab-item key="item1" class="pa-0 ma-0">
         <v-card flat class="pa-0 ma-0 px-2">
           <General @show="showSnakeBar" />
@@ -29,14 +31,7 @@
       <v-tab-item key="item3">
         <v-card flat>
           <v-card-text class="">
-            <Footer @show="showSnakeBar"/>
-          </v-card-text>
-        </v-card>
-      </v-tab-item>
-      <v-tab-item key="item5">
-        <v-card flat>
-          <v-card-text>
-             <KeysAndSecurity @show="showSnakeBar"/>
+            <Footer @show="showSnakeBar" />
           </v-card-text>
         </v-card>
       </v-tab-item>
@@ -45,28 +40,35 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Config",
   components: {
-    General:()=>import('@/components/Config/General/General'),
-    CommunityGuidelines:()=>import('@/components/Config/CommunityGuidelines/CommunityGuidelines'),
-    Snakebar:()=>import('@/components/Common/Snakebar'),
-    Footer:()=>import('@/components/Config/Footer/Footer'),
-    KeysAndSecurity:()=>import('@/components/Config/Keys/Keys')
+    General: () => import("@/components/Config/General/General"),
+    CommunityGuidelines: () =>
+      import("@/components/Config/CommunityGuidelines/CommunityGuidelines"),
+    Snakebar: () => import("@/components/Common/Snakebar"),
+    Footer: () => import("@/components/Config/Footer/Footer"),
+  },
+  computed: { ...mapState(["role"]) },
+  beforeMount() {
+    if (!this.$route.meta.access[this.role]) {
+      alert("Not Auth");
+      this.$router.replace("/home");
+    }
   },
   data: () => ({
     tab: null,
     snakeBarMessage: "",
     isSnakeBarVisible: false,
     snakeBarColor: "green",
-    snakeBarTimeOut: 5000
+    snakeBarTimeOut: 5000,
   }),
-  mounted() {},
   methods: {
     showSnakeBar(e) {
       this.snakeBarMessage = e;
       this.isSnakeBarVisible = true;
-    }
-  }
+    },
+  },
 };
 </script>
